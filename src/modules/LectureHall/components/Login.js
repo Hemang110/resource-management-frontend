@@ -31,7 +31,7 @@ export default function Login({ setIsLoggedIn, setIsAdmin }) {
   };
 
   return (
-    <div className="w-full max-w-xs m-auto mt-64">
+    <div className="w-full max-w-xs m-auto mt-36">
       <form
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         onSubmit={handleLogin}

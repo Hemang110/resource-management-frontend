@@ -9,6 +9,7 @@ import Profile from "./components/Profile";
 import AdminDashboard from "./components/AdminDashboard";
 import UpdateEmail from "./components/UpdateEmail";
 import DeleteUser from "./components/DeleteUser";
+import UpdateMobile from "./components/UpdateMobile";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -61,6 +62,9 @@ export default function App() {
         </Route>
         <Route path="/UpdateEmail">
             {isLoggedIn ? <UpdateEmail /> : <Redirect to="/lecturehall/login" />}
+        </Route>
+        <Route path="/UpdateMobile">
+            {isLoggedIn ? <UpdateMobile /> : <Redirect to="/lecturehall/login" />}
         </Route>
         <Route path="/lecturehall/admin/delete-user">
           {isAdmin ? <DeleteUser/> : <Redirect to="/lecturehall/login" />}
