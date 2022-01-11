@@ -49,6 +49,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="w-1/3 m-auto p-2">
+      Upload Time Table (CSV)
       <CSVReader
         ref={buttonRef}
         onFileLoad={handleOnFileLoad}
@@ -126,23 +127,25 @@ export default function AdminDashboard() {
         className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-3"
         onClick={(e) => {
           e.preventDefault();
-          history.push("/lecturehall/admin/delete-user")
+          history.push("/lecturehall/admin/delete-user");
         }}
       >
-        Delete User Accounts
+        Show and Delete User Accounts
       </button>
       <button
         className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-3"
-        onClick={() => {
-          console.log("2");
+        onClick={(e) => {
+          e.preventDefault();
+          history.push("/lecturehall/admin/update-lh");
         }}
       >
-        Add, Update and Delete Lecture Halls
+        Show and Delete Lecture Halls
       </button>
       <button
         className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-3"
-        onClick={() => {
-          console.log("3");
+        onClick={(e) => {
+          e.preventDefault();
+          history.push("/lecturehall/admin/pendingalloc");
         }}
       >
         Pending Allocation Requests
@@ -153,7 +156,7 @@ export default function AdminDashboard() {
           console.log("4");
         }}
       >
-        See and Edit Time Table Allocations or Bookings
+        See Bookings
       </button>
     </div>
   );

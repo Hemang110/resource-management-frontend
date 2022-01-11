@@ -9,8 +9,8 @@ function classNames(...classes) {
 
 export default function Navbar({ setIsLoggedIn, isAdmin, setIsAdmin }) {
   const [navigation, setNavigation] = useState([
-    { name: "Allocated", href: "/lecturehall/allocated", current: true },
-    { name: "Available", href: "/lecturehall/available", current: false },
+    { name: "Allocated", href: "/lecturehall/allocated", current: false },
+    { name: "Available", href: "/lecturehall/available", current: true },
     { name: "All LH", href: "/lecturehall/all", current: false },
   ]);
 

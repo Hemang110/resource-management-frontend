@@ -1,9 +1,10 @@
-import { Redirect } from "react-router";
+import { useHistory } from "react-router-dom";
 import { useRef } from "react";
 
-export default function Login({ setIsLoggedIn, setIsAdmin }) {
+export default function Login({ setIsLoggedIn, setIsAdmin, setUser }) {
   const emailInputRef = useRef();
   const passInputRef = useRef();
+  const history = useHistory();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,17 +18,19 @@ export default function Login({ setIsLoggedIn, setIsAdmin }) {
         username: emailInputRef.current.value,
         password: passInputRef.current.value,
       }),
-    }).then((data) => {
-      console.log(data);
-      if (data.status === 200) {
-        setIsLoggedIn(true);
-        setIsAdmin(false);
-      }
-      if (data.status === 201) {
-        setIsLoggedIn(true);
-        setIsAdmin(true);
-      }
-    });
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data[0].designation === "admin") {
+          setIsLoggedIn(true);
+          setIsAdmin(true);
+        } else {
+          setIsLoggedIn(true);
+          setIsAdmin(false);
+        }
+        setUser(data);
+      });
   };
 
   return (
@@ -72,6 +75,16 @@ export default function Login({ setIsLoggedIn, setIsAdmin }) {
           </button>
         </div>
       </form>
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        type="submit"
+        onClick={(e) => {
+          e.preventDefault();
+          history.push("/lecturehall/signup");
+        }}
+      >
+        Click here to Sign Up
+      </button>
     </div>
   );
 }

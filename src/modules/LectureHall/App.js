@@ -7,13 +7,18 @@ import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import Profile from "./components/Profile";
 import AdminDashboard from "./components/AdminDashboard";
+import DeleteUser from "./components/AdminDashboard/DeleteUser";
+import UpdateLH from "./components/AdminDashboard/UpdateLH";
+import PendingAllocation from "./components/AdminDashboard/PendingAllocation";
 import UpdateEmail from "./components/UpdateEmail";
 import DeleteUser from "./components/DeleteUser";
 import UpdateMobile from "./components/UpdateMobile";
+import SignUp from "./components/SignUp";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState([]);
 
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") === "true") {
@@ -43,31 +48,56 @@ export default function App() {
         </Route>
         <Route path="/lecturehall/login">
           {!isLoggedIn ? (
-            <Login setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />
+            <Login
+              setIsLoggedIn={setIsLoggedIn}
+              setIsAdmin={setIsAdmin}
+              setUser={setUser}
+            />
           ) : (
-            <Redirect to="/lecturehall/allocated" />
+            <Redirect to="/lecturehall/available" />
           )}
+        </Route>
+        <Route path="/lecturehall/signup">
+          <SignUp />
         </Route>
         <Route path="/lecturehall/all">
           {isLoggedIn ? <ShowAllLH /> : <Redirect to="/lecturehall/login" />}
         </Route>
         <Route path="/lecturehall/available">
-          {isLoggedIn ? <AvailableLH /> : <Redirect to="/lecturehall/login" />}
+          {isLoggedIn ? (
+            <AvailableLH user={user} />
+          ) : (
+            <Redirect to="/lecturehall/login" />
+          )}
         </Route>
         <Route path="/lecturehall/allocated">
-          {isLoggedIn ? <AllocatedLH /> : <Redirect to="/lecturehall/login" />}
+          {isLoggedIn ? (
+            <AllocatedLH user={user} />
+          ) : (
+            <Redirect to="/lecturehall/login" />
+          )}
         </Route>
         <Route path="/lecturehall/profile">
           {isLoggedIn ? <Profile /> : <Redirect to="/lecturehall/login" />}
         </Route>
         <Route path="/UpdateEmail">
-            {isLoggedIn ? <UpdateEmail /> : <Redirect to="/lecturehall/login" />}
+          {isLoggedIn ? <UpdateEmail /> : <Redirect to="/lecturehall/login" />}
         </Route>
         <Route path="/UpdateMobile">
             {isLoggedIn ? <UpdateMobile /> : <Redirect to="/lecturehall/login" />}
         </Route>
         <Route path="/lecturehall/admin/delete-user">
-          {isAdmin ? <DeleteUser/> : <Redirect to="/lecturehall/login" />}
+          {isAdmin ? <DeleteUser /> : <Redirect to="/lecturehall/login" />}
+        </Route>
+        <Route path="/lecturehall/admin/update-lh">
+          {isAdmin ? <UpdateLH /> : <Redirect to="/lecturehall/login" />}
+        </Route>
+        <Route path="/lecturehall/admin/pendingalloc">
+          {isAdmin ? (
+            <PendingAllocation />
+          ) : (
+            <Redirect to="/lecturehall/login" />
+          )}
         </Route>
         <Route exact path="/lecturehall/admin">
           {isAdmin ? <AdminDashboard /> : <Redirect to="/lecturehall/login" />}

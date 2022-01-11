@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Modal from "./Modal";
 import Backdrop from "./Backdrop";
 import "./Lecturehall.css";
 
-export default function AvailableLH() {
+export default function AvailableLH({user}) {
 
   const [available, setAvailable] = useState([]);
   const [booked, setBooked] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const dateInputRef = useRef();
   const fromTimeInputRef = useRef();
@@ -15,8 +16,9 @@ export default function AvailableLH() {
   const capacityInputRef = useRef();
 
   function bookingHandler(lh_id) { //book the available lt
-
+    console.log(lh_id)
     const s = (lh_id === 5 || lh_id === 9) ? 2 : 1;
+    setModalIsOpen(false);
 
     fetch(`https://lecture-hall-backend.herokuapp.com/lecturehall/available/${lh_id}`, {
       method: "POST",
@@ -24,22 +26,23 @@ export default function AvailableLH() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user_id: 1,
-        start: "2008-11-11 13:23:44",
-        end: "2008-11-09 15:45:21",
+        user_id: user[0].user_id,
+        start: dateInputRef.current.value + " " + fromTimeInputRef.current.value + ":00",
+        end: dateInputRef.current.value + " " + toTimeInputRef.current.value + ":00",
         purpose: "testing",
         status: s
       })
     }).then((response) => response.json())
       .then((data) => {
-        setAvailable(data);
-        setModalIsOpen(false);
+        setIsLoading(true)
       });
   }
 
   function setModalHandler() {
     setModalIsOpen(false);
   }
+
+  // useEffect(() => submitHandler(),[available,booked])
 
   function submitHandler(e) { //fetch available lt
     e.preventDefault();
@@ -50,11 +53,11 @@ export default function AvailableLH() {
       },
       body: JSON.stringify({
         capacity: capacityInputRef.current.value,
-        start: "2008-11-11 13:23:44",
-        end: "2008-11-09 15:45:21"
+        start: dateInputRef.current.value + " " + fromTimeInputRef.current.value + ":00",
+        end: dateInputRef.current.value + " " + toTimeInputRef.current.value + ":00"
       })
     }).then((response) => response.json())
-      .then((data) => setAvailable(data));
+      .then((data) => {setAvailable(data)})
 
     fetch("https://lecture-hall-backend.herokuapp.com/lecturehall/booked", { //lt booked in the time slot
       method: "POST",
@@ -63,15 +66,18 @@ export default function AvailableLH() {
       },
       body: JSON.stringify({
         capacity: capacityInputRef.current.value,
-        start: "2008-11-11 13:23:44",
-        end: "2008-11-09 15:45:21"
+        start: dateInputRef.current.value + " " + fromTimeInputRef.current.value + ":00",
+        end: dateInputRef.current.value + " " + toTimeInputRef.current.value + ":00"
       })
     }).then((response) => response.json())
-      .then((data) => setBooked(data));
+    .then((data) => {setBooked(data)
+    setIsLoading(false)})
   }
 
   return (
     <div>
+      {console.log(user)}
+
       <form className="w-full max-w-8xl	mx-16 my-16" onSubmit={submitHandler}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/5 px-3 mb-6 md:mb-0">
@@ -146,6 +152,9 @@ export default function AvailableLH() {
                     </th>
                   </tr>
                 </thead>
+                {isLoading  ? (
+                <div>Available Lecture halls will be displayed here.</div>
+                ) : (
                 <tbody className="bg-white divide-y divide-gray-200">
                   {available.map((lt) => (
                     <tr key={lt.lh_id}>
@@ -167,16 +176,16 @@ export default function AvailableLH() {
                         </span>
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-indigo-600 mx-6 hover:text-indigo-900" onClick={() => setModalIsOpen(true)}>
+                        <a href="#" className="text-indigo-600 mx-6 hover:text-indigo-900" onClick={() => bookingHandler(lt.lh_id)}>
                           Book
                         </a>
-                        {modalIsOpen && (
+                        {/* {modalIsOpen && (
                     <Modal
                       onCancel={setModalHandler}
                       onConfirm={() => bookingHandler(lt.lh_id)}
                     />
-                  )}
-                  {modalIsOpen && <Backdrop onClick={setModalHandler} />}
+                  )} */}
+                  {/* {modalIsOpen && <Backdrop onClick={setModalHandler} />} */}
                       </td>
                     </tr>
                   ))}
@@ -204,9 +213,9 @@ export default function AvailableLH() {
                       </td>
                     </tr>
                   ))}
-
-                  
-                </tbody>
+               
+                </tbody>)
+                }
               </table>
             </div>
           </div>
