@@ -1,5 +1,5 @@
 import "./Lecturehall.css";
 
 export default function Backdrop(props) {
-  return <div className="backdrop" onClick={props.onClick} />;
+  return <div className="backdro" onClick={props.onClick} />;
 }
